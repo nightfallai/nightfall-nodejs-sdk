@@ -9,7 +9,7 @@ export class Nightfall {
   /**
    * Create an instance of the Nightfall client.
    * 
-   * @param {string} apiKey Your Nightfall API key
+   * @param apiKey Your Nightfall API key
    */
   constructor(apiKey: string) {
     this.API_KEY = apiKey
@@ -30,7 +30,7 @@ export class Nightfall {
    * 
    * @param payload An array of strings that you would like to scan
    * @param config The configuration to use to scan the payload
-   * @returns {Promise} A promise object representing the Nightfall response
+   * @returns A promise object representing the Nightfall response
    */
   async scanText(payload: string[], config: ScanText.RequestConfig): Promise<NightfallResponse<ScanText.Response>> {
     try {
@@ -57,8 +57,8 @@ export class Nightfall {
    * A helpder function to determine whether the error is a generic JavaScript error or a
    * Nightfall API error.
    * 
-   * @param {Object} error The error object
-   * @returns {boolean} A boolean that indicates if the error is a Nightfall error
+   * @param error The error object
+   * @returns A boolean that indicates if the error is a Nightfall error
    */
   private isNightfallError(error: any): boolean {
     if (error.hasOwnProperty('isAxiosError') && error.isAxiosError && error.response.data.hasOwnProperty('code')) {

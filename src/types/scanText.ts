@@ -4,6 +4,7 @@ export namespace ScanText {
   export interface RequestConfig {
     detectionRuleUUIDs?: string[]
     detectionRules?: DetectionRule[]
+    contextBytes?: number
   }
 
   export interface DetectionRule {
@@ -18,22 +19,29 @@ export namespace ScanText {
   }
 
   export interface Finding {
-    finding: string;
+    finding: string
+    redactedFinding?: string
+    beforeContext?: string
+    afterContext?: string
     detector: {
-      name: string;
-      uuid: string;
+      name: string
+      uuid: string
     };
-    confidence: string;
+    confidence: string
     location: {
-      byteRange: FindingRange;
-      codepointRange: FindingRange;
+      byteRange: FindingRange
+      codepointRange: FindingRange
     };
-    matchedDetectionRuleUUIDs: any[];
-    matchedDetectionRules: string[];
+    redactedLocation?: {
+      byteRange: FindingRange
+      codepointRange: FindingRange
+    }
+    matchedDetectionRuleUUIDs: any[]
+    matchedDetectionRules: string[]
   }
 
   type FindingRange = {
-    start: number;
-    end: number;
+    start: number
+    end: number
   }
 }
