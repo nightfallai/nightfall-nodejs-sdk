@@ -10,13 +10,18 @@
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage"
   },
   "keywords": [],
   "author": "Nagarjun Palavalli <nag@nightfall.ai>",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.4",
-    "typescript": "^4.4.3"
+    "axios": "^0.21.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.2",
+    "jest": "^27.3.1",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.4.4"
   }
 }
