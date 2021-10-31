@@ -1,0 +1,13 @@
+name: Run Tests
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests with Jest
+        env:
+          NIGHTFALL_API_KEY: ${{ secrets.NIGHTFALL_API_KEY }}
+        run: npm run test
