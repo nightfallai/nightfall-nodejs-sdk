@@ -10,4 +10,11 @@ export namespace ScanFile {
     chunkSize: number,
     mimeType: string
   }
+
+  export interface FinishUploadResponse {
+    id: string,
+    fileSizeBytes: number,
+    chunkSize: number,
+    mimeType: string
+  }
 }

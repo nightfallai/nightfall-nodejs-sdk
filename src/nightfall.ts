@@ -21,7 +21,7 @@ export class Nightfall extends Client {
    * 
    * @param payload An array of strings that you would like to scan
    * @param config The configuration to use to scan the payload
-   * @returns A promise object representing the Nightfall response
+   * @returns A promise that contains the API response
    */
   async scanText(payload: string[], config: ScanText.RequestConfig): Promise<NightfallResponse<ScanText.Response>> {
     try {
@@ -44,15 +44,22 @@ export class Nightfall extends Client {
     }
   }
 
-  async scanFile(filePath: string): Promise<NightfallResponse<ScanFile.InitializeResponse>> {
+  /**
+   * A utility method that wraps the four steps related to uploading and scanning files.
+   * 
+   * @see https://docs.nightfall.ai/docs/scanning-files
+   * 
+   * @param filePath The path of the file that you wish to scan
+   * @returns A promise that contains the API response
+   */
+  async scanFile(filePath: string): Promise<NightfallResponse<ScanFile.FinishUploadResponse>> {
     try {
       const fileScanner = new FileScanner(this.API_KEY, filePath)
-
-      // Initialize the scan
-      const InitializeResponse = await fileScanner.initialize()
+      await fileScanner.initialize()
       await fileScanner.uploadChunks()
+      const response = await fileScanner.finish()
 
-      return Promise.resolve(new NightfallResponse<ScanFile.InitializeResponse>(InitializeResponse.data))
+      return Promise.resolve(new NightfallResponse<ScanFile.FinishUploadResponse>(response.data))
     } catch (error) {
       if (this.isNightfallError(error)) {
         const axiosError = error as AxiosError<NightfallError>

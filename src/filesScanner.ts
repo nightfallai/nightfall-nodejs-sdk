@@ -31,7 +31,7 @@ export class FileScanner extends Client {
       // Get the file size and mime type
       const stats = fs.statSync(this.filePath)
 
-      // Call Nightfall API
+      // Call API
       const response = await axios.post<ScanFile.InitializeResponse>(
         `${this.API_HOST}/v3/upload`,
         {
@@ -50,6 +50,9 @@ export class FileScanner extends Client {
     }
   }
 
+  /**
+   * Read the file, break it up into chunks and upload each chunk.
+   */
   async uploadChunks() {
     try {
       // Read the file in chunks
@@ -59,32 +62,43 @@ export class FileScanner extends Client {
       })
 
       // Upload chunks
-      const headers = this.AXIOS_HEADERS
-      headers['Content-Type'] = 'application/octet-stream'
-
       let uploadOffset = 0
 
-      stream.on('data', async (chunk) => {
+      for await (const chunk of stream) {
         await axios.patch(`${this.API_HOST}/v3/upload/${this.fileId}`, chunk, {
           headers: {
-            ...headers,
+            ...this.AXIOS_HEADERS,
+            'Content-Type': 'application/octet-stream',
             'X-Upload-Offset': uploadOffset
           }
         })
 
         uploadOffset += this.chunkSize
-      })
-
-      // Mark as completed
-      stream.on('close', () => {
-        console.log('========')
-        console.log('File uploaded')
-        console.log('File ID:', this.fileId)
-      })
+      }
 
       return Promise.resolve()
     } catch (error) {
-      return Promise.reject()
+      return Promise.reject(error)
+    }
+  }
+
+  /**
+   * Marks an upload as 'finished' once all the chunks are uploaded.
+   * This step is necessary to begin scanning.
+   * 
+   * @returns A promise representing the API response
+   */
+  async finish(): Promise<AxiosResponse<ScanFile.FinishUploadResponse>> {
+    try {
+      const response = await axios.post<ScanFile.FinishUploadResponse>(
+        `${this.API_HOST}/v3/upload/${this.fileId}/finish`,
+        {},
+        { headers: this.AXIOS_HEADERS }
+      )
+
+      return Promise.resolve(response)
+    } catch (error) {
+      return Promise.reject(error)
     }
   }
 }
