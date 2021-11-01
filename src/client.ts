@@ -1,12 +1,7 @@
-import { FileScanner } from "./filesScanner"
-
 export class Client {
   protected readonly API_HOST = 'https://api.nightfall.ai'
   protected readonly API_KEY: string = ''
-  protected readonly AXIOS_HEADERS: { [key: string]: string } = {}
-
-  // Expose the file scanner internally
-  protected fileScanner: FileScanner
+  protected readonly AXIOS_HEADERS: { [key: string]: string | number } = {}
 
   constructor(apiKey: string) {
     this.API_KEY = apiKey
@@ -17,9 +12,6 @@ export class Client {
       'Content-Type': 'application/json',
       "User-Agent": "nightfall-nodejs-sdk/1.0.0"
     }
-
-    // Initialize the file scanner
-    this.fileScanner = new FileScanner(this.AXIOS_HEADERS)
   }
 
   /**

@@ -46,7 +46,11 @@ export class Nightfall extends Client {
 
   async scanFile(filePath: string): Promise<NightfallResponse<ScanFile.InitializeResponse>> {
     try {
-      const InitializeResponse = await this.fileScanner.initialize(filePath)
+      const fileScanner = new FileScanner(this.API_KEY, filePath)
+
+      // Initialize the scan
+      const InitializeResponse = await fileScanner.initialize()
+      await fileScanner.uploadChunks()
 
       return Promise.resolve(new NightfallResponse<ScanFile.InitializeResponse>(InitializeResponse.data))
     } catch (error) {
