@@ -46,24 +46,29 @@ export class Nightfall extends Client {
 
   /**
    * A utility method that wraps the four steps related to uploading and scanning files.
+   * As the underlying file might be arbitrarily large, this scan is conducted
+   * asynchronously. Results from the scan are delivered to the webhook URL provided in
+   * the request.
    * 
    * @see https://docs.nightfall.ai/docs/scanning-files
    * 
    * @param filePath The path of the file that you wish to scan
+   * @param policy An object containing the scan policy
    * @returns A promise that contains the API response
    */
-  async scanFile(filePath: string): Promise<NightfallResponse<ScanFile.FinishUploadResponse>> {
+  async scanFile(filePath: string, policy: ScanFile.RequestPolicy): Promise<NightfallResponse<ScanFile.ScanResponse>> {
     try {
       const fileScanner = new FileScanner(this.API_KEY, filePath)
       await fileScanner.initialize()
       await fileScanner.uploadChunks()
-      const response = await fileScanner.finish()
+      await fileScanner.finish()
+      const response = await fileScanner.scan(policy)
 
-      return Promise.resolve(new NightfallResponse<ScanFile.FinishUploadResponse>(response.data))
+      return Promise.resolve(new NightfallResponse<ScanFile.ScanResponse>(response.data))
     } catch (error) {
       if (this.isNightfallError(error)) {
         const axiosError = error as AxiosError<NightfallError>
-        const errorResponse = new NightfallResponse<ScanFile.InitializeResponse>()
+        const errorResponse = new NightfallResponse<ScanFile.ScanResponse>()
         errorResponse.setError(axiosError.response?.data as NightfallError)
         return Promise.resolve(errorResponse)
       }

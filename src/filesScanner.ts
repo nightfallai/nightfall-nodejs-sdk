@@ -101,4 +101,24 @@ export class FileScanner extends Client {
       return Promise.reject(error)
     }
   }
+
+  /**
+   * Triggers a scan of the uploaded file.
+   * 
+   * @param policy An object containing the scan policy
+   * @returns A promise representing the API response
+   */
+  async scan(policy: ScanFile.RequestPolicy): Promise<AxiosResponse<ScanFile.ScanResponse>> {
+    try {
+      const response = await axios.post<ScanFile.ScanResponse>(
+        `${this.API_HOST}/v3/upload/${this.fileId}/scan`,
+        { policy },
+        { headers: this.AXIOS_HEADERS },
+      )
+
+      return Promise.resolve(response)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
 }
