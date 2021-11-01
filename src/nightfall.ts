@@ -1,25 +1,16 @@
 import axios, { AxiosError } from 'axios'
-import { NightfallResponse, NightfallError, ScanText } from './types'
+import { Client } from './client'
+import { FileScanner } from './filesScanner'
+import { NightfallResponse, NightfallError, ScanText, ScanFile } from './types'
 
-export class Nightfall {
-  private readonly API_HOST = 'https://api.nightfall.ai'
-  private readonly API_KEY: string = ''
-  private readonly AXIOS_HEADERS: { [key: string]: string } = {}
-
+export class Nightfall extends Client {
   /**
    * Create an instance of the Nightfall client.
    * 
    * @param apiKey Your Nightfall API key
    */
   constructor(apiKey: string) {
-    this.API_KEY = apiKey
-
-    // Set Axios request headers since we will reuse this quite a lot
-    this.AXIOS_HEADERS = {
-      'Authorization': `Bearer ${this.API_KEY}`,
-      'Content-Type': 'application/json',
-      "User-Agent": "nightfall-nodejs-sdk/1.0.0"
-    }
+    super(apiKey)
   }
 
   /**
@@ -53,18 +44,20 @@ export class Nightfall {
     }
   }
 
-  /**
-   * A helpder function to determine whether the error is a generic JavaScript error or a
-   * Nightfall API error.
-   * 
-   * @param error The error object
-   * @returns A boolean that indicates if the error is a Nightfall error
-   */
-  private isNightfallError(error: any): boolean {
-    if (error.hasOwnProperty('isAxiosError') && error.isAxiosError && error.response.data.hasOwnProperty('code')) {
-      return true
-    }
+  async scanFile(filePath: string): Promise<NightfallResponse<ScanFile.InitializeResponse>> {
+    try {
+      const InitializeResponse = await this.fileScanner.initialize(filePath)
 
-    return false
+      return Promise.resolve(new NightfallResponse<ScanFile.InitializeResponse>(InitializeResponse.data))
+    } catch (error) {
+      if (this.isNightfallError(error)) {
+        const axiosError = error as AxiosError<NightfallError>
+        const errorResponse = new NightfallResponse<ScanFile.InitializeResponse>()
+        errorResponse.setError(axiosError.response?.data as NightfallError)
+        return Promise.resolve(errorResponse)
+      }
+
+      return Promise.reject(error)
+    }
   }
 }
