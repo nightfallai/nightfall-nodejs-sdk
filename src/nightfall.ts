@@ -1,16 +1,20 @@
 import axios, { AxiosError } from 'axios'
-import { Client } from './client'
+import { Base } from './base'
 import { FileScanner } from './filesScanner'
 import { NightfallResponse, NightfallError, ScanText, ScanFile } from './types'
 
-export class Nightfall extends Client {
+export class Nightfall extends Base {
   /**
-   * Create an instance of the Nightfall client.
+   * Create an instance of the Nightfall client. Although you can supply
+   * your API key manually when you initiate the client, we recommend that
+   * you configure your API key as an environment variable named
+   * NIGHTFALL_API_KEY. The client automatically reads `process.env.NIGHTFALL_API_KEY`
+   * when you initiate the client like so: `const client = new Nightfall()`.
    * 
    * @param apiKey Your Nightfall API key
    */
-  constructor(apiKey: string) {
-    super(apiKey)
+  constructor(apiKey?: string) {
+    apiKey ? super(apiKey) : super()
   }
 
   /**
@@ -58,7 +62,7 @@ export class Nightfall extends Client {
    */
   async scanFile(filePath: string, policy: ScanFile.RequestPolicy): Promise<NightfallResponse<ScanFile.ScanResponse>> {
     try {
-      const fileScanner = new FileScanner(this.API_KEY, filePath)
+      const fileScanner = new FileScanner(filePath)
       await fileScanner.initialize()
       await fileScanner.uploadChunks()
       await fileScanner.finish()

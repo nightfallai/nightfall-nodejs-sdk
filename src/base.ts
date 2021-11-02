@@ -1,10 +1,14 @@
-export class Client {
+export class Base {
   protected readonly API_HOST = 'https://api.nightfall.ai'
   protected readonly API_KEY: string = ''
   protected readonly AXIOS_HEADERS: { [key: string]: string | number } = {}
 
-  constructor(apiKey: string) {
-    this.API_KEY = apiKey
+  constructor(apiKey?: string) {
+    if (!apiKey && !process.env.hasOwnProperty('NIGHTFALL_API_KEY')) {
+      throw new Error('Please provide an API Key or configure your key as an environment variable.')
+    }
+
+    this.API_KEY = apiKey || process.env.NIGHTFALL_API_KEY as string
 
     // Set Axios request headers since we will reuse this quite a lot
     this.AXIOS_HEADERS = {
