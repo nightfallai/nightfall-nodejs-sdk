@@ -11,10 +11,11 @@ export class FileScanner extends Base {
   /**
    * Create an instance of the FileScanner helper.
    * 
+   * @param apiKey Your Nightfall API key
    * @param filePath The path of the file that needs to be scanned
    */
-  constructor(filePath: string) {
-    super()
+  constructor(apiKey: string, filePath: string) {
+    super(apiKey)
     this.filePath = filePath
   }
 
@@ -105,13 +106,20 @@ export class FileScanner extends Base {
    * Triggers a scan of the uploaded file.
    * 
    * @param policy An object containing the scan policy
+   * @param requestMetadata The optional request metadata
    * @returns A promise representing the API response
    */
-  async scan(policy: ScanFile.RequestPolicy): Promise<AxiosResponse<ScanFile.ScanResponse>> {
+  async scan(policy: ScanFile.ScanPolicy, requestMetadata?: string): Promise<AxiosResponse<ScanFile.ScanResponse>> {
     try {
+      // Only send the requestMetadata if provided
+      const data: ScanFile.ScanRequest = { policy }
+      if (requestMetadata) {
+        data.requestMetadata = requestMetadata
+      }
+
       const response = await axios.post<ScanFile.ScanResponse>(
         `${this.API_HOST}/v3/upload/${this.fileId}/scan`,
-        { policy },
+        data,
         { headers: this.AXIOS_HEADERS },
       )
 

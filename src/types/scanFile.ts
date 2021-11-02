@@ -1,11 +1,15 @@
 import { Detector } from ".";
 
 export namespace ScanFile {
-  export interface RequestPolicy {
+  export interface ScanRequest {
+    policy: ScanPolicy
+    requestMetadata?: string
+  }
+
+  export interface ScanPolicy {
     detectionRuleUUIDs?: string[]
     detectionRules?: Detector.Rule[]
     webhookURL: string
-    requestMetadata?: string
   }
 
   export interface InitializeResponse {

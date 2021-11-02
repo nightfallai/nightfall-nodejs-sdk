@@ -14,7 +14,7 @@ export class Nightfall extends Base {
    * @param apiKey Your Nightfall API key
    */
   constructor(apiKey?: string) {
-    apiKey ? super(apiKey) : super()
+    super(apiKey)
   }
 
   /**
@@ -58,15 +58,18 @@ export class Nightfall extends Base {
    * 
    * @param filePath The path of the file that you wish to scan
    * @param policy An object containing the scan policy
+   * @param requestMetadata Optional - A string containing arbitrary metadata. You may opt to use
+   *                        this to help identify your input file upon receiving a webhook response.
+   *                        Maximum length 10 KB.
    * @returns A promise that contains the API response
    */
-  async scanFile(filePath: string, policy: ScanFile.RequestPolicy): Promise<NightfallResponse<ScanFile.ScanResponse>> {
+  async scanFile(filePath: string, policy: ScanFile.ScanPolicy, requestMetadata?: string): Promise<NightfallResponse<ScanFile.ScanResponse>> {
     try {
-      const fileScanner = new FileScanner(filePath)
+      const fileScanner = new FileScanner(this.API_KEY, filePath)
       await fileScanner.initialize()
       await fileScanner.uploadChunks()
       await fileScanner.finish()
-      const response = await fileScanner.scan(policy)
+      const response = await fileScanner.scan(policy, requestMetadata)
 
       return Promise.resolve(new NightfallResponse<ScanFile.ScanResponse>(response.data))
     } catch (error) {
