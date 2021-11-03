@@ -26,7 +26,12 @@ export class Base {
    * @returns A boolean that indicates if the error is a Nightfall error
    */
   protected isNightfallError(error: any): boolean {
-    if (error.hasOwnProperty('isAxiosError') && error.isAxiosError && error.response.data.hasOwnProperty('code')) {
+    if (
+      error.hasOwnProperty('isAxiosError')
+      && error.isAxiosError
+      && error.response.data.hasOwnProperty('code')
+      && error.response.data.hasOwnProperty('message')
+    ) {
       return true
     }
 
