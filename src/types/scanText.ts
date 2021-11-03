@@ -3,14 +3,8 @@ import { Detector } from ".";
 export namespace ScanText {
   export interface RequestConfig {
     detectionRuleUUIDs?: string[]
-    detectionRules?: DetectionRule[]
+    detectionRules?: Detector.Rule[]
     contextBytes?: number
-  }
-
-  export interface DetectionRule {
-    detectors: Detector.Properties[]
-    name: string
-    logicalOp: 'ANY' | 'ALL'
   }
 
   export interface Response {

@@ -1,25 +1,20 @@
 import axios, { AxiosError } from 'axios'
-import { NightfallResponse, NightfallError, ScanText } from './types'
+import { Base } from './base'
+import { FileScanner } from './filesScanner'
+import { NightfallResponse, NightfallError, ScanText, ScanFile } from './types'
 
-export class Nightfall {
-  private readonly API_HOST = 'https://api.nightfall.ai'
-  private readonly API_KEY: string = ''
-  private readonly AXIOS_HEADERS: { [key: string]: string } = {}
-
+export class Nightfall extends Base {
   /**
-   * Create an instance of the Nightfall client.
+   * Create an instance of the Nightfall client. Although you can supply
+   * your API key manually when you initiate the client, we recommend that
+   * you configure your API key as an environment variable named
+   * NIGHTFALL_API_KEY. The client automatically reads `process.env.NIGHTFALL_API_KEY`
+   * when you initiate the client like so: `const client = new Nightfall()`.
    * 
    * @param apiKey Your Nightfall API key
    */
-  constructor(apiKey: string) {
-    this.API_KEY = apiKey
-
-    // Set Axios request headers since we will reuse this quite a lot
-    this.AXIOS_HEADERS = {
-      'Authorization': `Bearer ${this.API_KEY}`,
-      'Content-Type': 'application/json',
-      "User-Agent": "nightfall-nodejs-sdk/1.0.0"
-    }
+  constructor(apiKey?: string) {
+    super(apiKey)
   }
 
   /**
@@ -30,7 +25,7 @@ export class Nightfall {
    * 
    * @param payload An array of strings that you would like to scan
    * @param config The configuration to use to scan the payload
-   * @returns A promise object representing the Nightfall response
+   * @returns A promise that contains the API response
    */
   async scanText(payload: string[], config: ScanText.RequestConfig): Promise<NightfallResponse<ScanText.Response>> {
     try {
@@ -54,17 +49,38 @@ export class Nightfall {
   }
 
   /**
-   * A helpder function to determine whether the error is a generic JavaScript error or a
-   * Nightfall API error.
+   * A utility method that wraps the four steps related to uploading and scanning files.
+   * As the underlying file might be arbitrarily large, this scan is conducted
+   * asynchronously. Results from the scan are delivered to the webhook URL provided in
+   * the request.
    * 
-   * @param error The error object
-   * @returns A boolean that indicates if the error is a Nightfall error
+   * @see https://docs.nightfall.ai/docs/scanning-files
+   * 
+   * @param filePath The path of the file that you wish to scan
+   * @param policy An object containing the scan policy
+   * @param requestMetadata Optional - A string containing arbitrary metadata. You may opt to use
+   *                        this to help identify your input file upon receiving a webhook response.
+   *                        Maximum length 10 KB.
+   * @returns A promise that contains the API response
    */
-  private isNightfallError(error: any): boolean {
-    if (error.hasOwnProperty('isAxiosError') && error.isAxiosError && error.response.data.hasOwnProperty('code')) {
-      return true
-    }
+  async scanFile(filePath: string, policy: ScanFile.ScanPolicy, requestMetadata?: string): Promise<NightfallResponse<ScanFile.ScanResponse>> {
+    try {
+      const fileScanner = new FileScanner(this.API_KEY, filePath)
+      await fileScanner.initialize()
+      await fileScanner.uploadChunks()
+      await fileScanner.finish()
+      const response = await fileScanner.scan(policy, requestMetadata)
 
-    return false
+      return Promise.resolve(new NightfallResponse<ScanFile.ScanResponse>(response.data))
+    } catch (error) {
+      if (this.isNightfallError(error)) {
+        const axiosError = error as AxiosError<NightfallError>
+        const errorResponse = new NightfallResponse<ScanFile.ScanResponse>()
+        errorResponse.setError(axiosError.response?.data as NightfallError)
+        return Promise.resolve(errorResponse)
+      }
+
+      return Promise.reject(error)
+    }
   }
 }

@@ -75,4 +75,10 @@ export namespace Detector {
     exclusionRules?: ExclusionRule[]
     redactionConfig?: RedactionConfig
   }
+
+  export interface Rule {
+    detectors: Properties[]
+    name: string
+    logicalOp: 'ANY' | 'ALL'
+  }
 }
