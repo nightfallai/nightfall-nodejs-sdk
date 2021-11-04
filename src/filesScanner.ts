@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios"
 import fs from 'fs'
 import { Base } from './base'
-import { ScanFile } from './types'
+import { Config, ScanFile } from './types'
 
 export class FileScanner extends Base {
   filePath: string
@@ -11,11 +11,10 @@ export class FileScanner extends Base {
   /**
    * Create an instance of the FileScanner helper.
    * 
-   * @param apiKey Your Nightfall API key
    * @param filePath The path of the file that needs to be scanned
    */
-  constructor(apiKey: string, filePath: string) {
-    super(apiKey)
+  constructor(config: Config, filePath: string) {
+    super(config)
     this.filePath = filePath
   }
 

@@ -1,7 +1,10 @@
 import axios, { AxiosError } from 'axios'
+import crypto from 'crypto'
 import { Base } from './base'
 import { FileScanner } from './filesScanner'
-import { NightfallResponse, NightfallError, ScanText, ScanFile } from './types'
+import {
+  Config, NightfallResponse, NightfallError, ScanText, ScanFile
+} from './types'
 
 export class Nightfall extends Base {
   /**
@@ -13,8 +16,8 @@ export class Nightfall extends Base {
    * 
    * @param apiKey Your Nightfall API key
    */
-  constructor(apiKey?: string) {
-    super(apiKey)
+  constructor(config?: Config) {
+    super(config)
   }
 
   /**
@@ -65,7 +68,13 @@ export class Nightfall extends Base {
    */
   async scanFile(filePath: string, policy: ScanFile.ScanPolicy, requestMetadata?: string): Promise<NightfallResponse<ScanFile.ScanResponse>> {
     try {
-      const fileScanner = new FileScanner(this.API_KEY, filePath)
+      const fileScanner = new FileScanner(
+        {
+          apiKey: this.API_KEY,
+          webhookSigningSecret: this.WEBHOOK_SIGNING_SECRET,
+        },
+        filePath,
+      )
       await fileScanner.initialize()
       await fileScanner.uploadChunks()
       await fileScanner.finish()
@@ -82,5 +91,32 @@ export class Nightfall extends Base {
 
       return Promise.reject(error)
     }
+  }
+
+  /**
+   * A helper method to validate incoming webhook requests from Nightfall. For more information,
+   * visit https://docs.nightfall.ai/docs/creating-a-webhook-server#webhook-signature-verification.
+   * 
+   * @param requestBody The webhook request body
+   * @param requestSignature The value of the X-Nightfall-Signature header
+   * @param requestTimestamp The value of the X-Nightfall-Timestamp header
+   * @param threshold Optional - The threshold in seconds. Defaults to 300 seconds (5 minutes).
+   * @returns A boolean that indicates whether the webhook is valid
+   */
+  validateWebhook(requestBody: ScanFile.WebhookBody, requestSignature: string, requestTimestamp: number, threshold?: number): boolean {
+    // First verify that the request occurred recently (before the configured threshold time)
+    // to protect against replay attacks
+    const defaultThreshold = threshold || 300
+    const now = Math.round(new Date().getTime() / 1000)
+    const thresholdTimestamp = now - defaultThreshold
+    if (requestTimestamp < thresholdTimestamp || requestTimestamp > now) {
+      return false
+    }
+
+    // Validate request signature using the signing secret
+    const hashPayload = `${requestTimestamp}:${JSON.stringify(requestBody)}`
+    const computedSignature = crypto.createHmac('sha256', this.WEBHOOK_SIGNING_SECRET).update(hashPayload).digest('hex')
+
+    return computedSignature === requestSignature
   }
 }

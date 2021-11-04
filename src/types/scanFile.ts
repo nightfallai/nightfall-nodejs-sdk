@@ -30,4 +30,13 @@ export namespace ScanFile {
     id: string
     message: string
   }
+
+  export interface WebhookBody {
+    findingsURL: string;
+    validUntil: string;
+    uploadID: string;
+    findingsPresent: boolean;
+    requestMetadata: string;
+    errors: any[];
+  }
 }
