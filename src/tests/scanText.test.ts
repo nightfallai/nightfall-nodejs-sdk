@@ -2,11 +2,6 @@ import { Nightfall } from '../nightfall'
 import { creditCardConfig, creditCardPayload, errorResponse } from './mocks'
 
 describe('should test the text scanning method', () => {
-  // Make sure the API key is configured as an environment variable
-  if (!process.env.NIGHTFALL_API_KEY) {
-    throw new Error("NIGHTFALL_API_KEY environment variable is required")
-  }
-
   // Run tests
   it('should create a new nightfall client and check if the scanText method exists', () => {
     const client = new Nightfall()
