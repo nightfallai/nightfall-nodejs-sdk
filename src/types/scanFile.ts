@@ -1,4 +1,4 @@
-import { Detector } from ".";
+import { Detector, NightfallError } from ".";
 
 export namespace ScanFile {
   export interface ScanRequest {
@@ -37,6 +37,6 @@ export namespace ScanFile {
     uploadID: string;
     findingsPresent: boolean;
     requestMetadata: string;
-    errors: any[];
+    errors: NightfallError[];
   }
 }

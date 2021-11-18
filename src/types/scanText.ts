@@ -38,13 +38,4 @@ export namespace ScanText {
     start: number
     end: number
   }
-
-  export interface WebhookResponse {
-    findingsURL: string;
-    validUntil: string;
-    uploadID: string;
-    findingsPresent: boolean;
-    requestMetadata: string;
-    errors: any[];
-  }
 }
