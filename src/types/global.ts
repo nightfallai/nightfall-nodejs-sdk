@@ -1,3 +1,9 @@
+// Params to initiate the client
+export type Config = {
+  apiKey?: string
+  webhookSigningSecret?: string
+}
+
 export interface NightfallError {
   code: number;
   message: string;

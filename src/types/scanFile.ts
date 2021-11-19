@@ -1,4 +1,4 @@
-import { Detector } from ".";
+import { Detector, NightfallError } from ".";
 
 export namespace ScanFile {
   export interface ScanRequest {
@@ -29,5 +29,14 @@ export namespace ScanFile {
   export interface ScanResponse {
     id: string
     message: string
+  }
+
+  export interface WebhookBody {
+    findingsURL: string;
+    validUntil: string;
+    uploadID: string;
+    findingsPresent: boolean;
+    requestMetadata: string;
+    errors: NightfallError[];
   }
 }
