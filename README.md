@@ -29,11 +29,11 @@ For a full list of external dependencies please consult `package.json`.
 
 ### NPM
 
-`npm install nightfall-node-sdk`
+`npm install nightfall-js`
 
 ### Yarn
 
-`yarn add nightfall-node-sdk`
+`yarn add nightfall-js`
 
 ### Building Locally
 

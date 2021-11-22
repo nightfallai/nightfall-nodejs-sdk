@@ -1,7 +1,7 @@
 {
-  "name": "nightfall",
+  "name": "nightfall-js",
   "version": "1.0.0",
-  "description": "",
+  "description": "Build data classification and protection into your application or service with Nightfall.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -12,9 +12,13 @@
     "prepare": "npm run build",
     "test": "jest --coverage"
   },
-  "keywords": [],
+  "keywords": [
+    "data classification",
+    "security"
+  ],
+  "repository": "github:nightfallai/nightfall-nodejs-sdk",
   "author": "Nagarjun Palavalli <nag@nightfall.ai>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.21.4"
   },
