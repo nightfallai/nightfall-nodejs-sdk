@@ -2,7 +2,6 @@ import { Nightfall } from '../nightfall'
 import { creditCardConfig, creditCardPayload, errorResponse } from './mocks'
 
 describe('should test the text scanning method', () => {
-  // Run tests
   it('should create a new nightfall client and check if the scanText method exists', () => {
     const client = new Nightfall()
 
