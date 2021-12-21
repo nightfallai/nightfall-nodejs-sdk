@@ -1,6 +1,6 @@
 import { Base, ENV_API_KEY } from '../base'
 
-describe('test base class', () => {
+describe('base class', () => {
   const ENV_VARS = process.env
 
   beforeEach(() => {
