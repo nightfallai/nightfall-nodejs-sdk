@@ -1,8 +1,8 @@
 import { Config } from "./types"
 
 // Default environment variables
-const ENV_API_KEY = 'NIGHTFALL_API_KEY'
-const ENV_WEBHOOK_SIGNING_SECRET = 'NIGHTFALL_WEBHOOK_SIGNING_SECRET'
+export const ENV_API_KEY = 'NIGHTFALL_API_KEY'
+export const ENV_WEBHOOK_SIGNING_SECRET = 'NIGHTFALL_WEBHOOK_SIGNING_SECRET'
 
 export class Base {
   protected readonly API_HOST = 'https://api.nightfall.ai'
