@@ -22,7 +22,7 @@ describe('nightfall.validateWebhook()', () => {
       VALID_BODY,
       VALID_SIGNATURE,
       1636099513,
-      63072000 // Two-years
+      307584000 // Ten years
     )
 
     expect(isValid).toBeTruthy()
@@ -53,7 +53,7 @@ describe('nightfall.validateWebhook()', () => {
       VALID_BODY,
       VALID_SIGNATURE,
       Math.ceil(new Date().getTime() / 1000) + 300,
-      63072000 // Two-years
+      307584000 // Ten years
     )
 
     expect(isValid).toBeFalsy()
@@ -69,7 +69,7 @@ describe('nightfall.validateWebhook()', () => {
       VALID_BODY,
       'INVALID_SIGNATURE',
       1636099513,
-      63072000 // Two-years
+      307584000 // Ten years
     )
 
     expect(isValid).toBeFalsy()
