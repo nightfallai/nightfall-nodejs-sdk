@@ -5,6 +5,7 @@ export namespace ScanText {
     detectionRuleUUIDs?: string[]
     detectionRules?: Detector.Rule[]
     contextBytes?: number
+    defaultRedactionConfig?: Detector.RedactionConfig
   }
 
   export interface Response {
