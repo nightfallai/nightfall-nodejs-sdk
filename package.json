@@ -1,6 +1,6 @@
 {
   "name": "nightfall-js",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Build data classification and protection into your application or service with Nightfall.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
