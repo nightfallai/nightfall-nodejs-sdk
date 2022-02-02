@@ -26,10 +26,12 @@ export namespace ScanText {
     location: {
       byteRange: FindingRange
       codepointRange: FindingRange
+      commitHash: string
     };
     redactedLocation?: {
       byteRange: FindingRange
       codepointRange: FindingRange
+      commitHash: string,
     }
     matchedDetectionRuleUUIDs: any[]
     matchedDetectionRules: string[]

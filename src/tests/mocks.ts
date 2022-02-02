@@ -49,7 +49,8 @@ export const scanTextResponse = {
           "codepointRange": {
             "start": 25,
             "end": 41
-          }
+          },
+          "commitHash": "",
         },
         "matchedDetectionRuleUUIDs": [],
         "matchedDetectionRules": [
