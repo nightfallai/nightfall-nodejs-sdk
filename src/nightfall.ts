@@ -37,7 +37,7 @@ export class Nightfall extends Base {
     try {
       const response = await axios.post<ScanText.Response>(
         `${this.API_HOST}/v3/scan`,
-        { payload, policy },
+        { payload, policy, policyUUIDs },
         { headers: this.AXIOS_HEADERS },
       )
 
