@@ -27,16 +27,17 @@ export class Nightfall extends Base {
    * to uncover sensitive information. Returns a list equal in size to the number of provided
    * string payloads. The item at each list index will be a list of all matches for the provided
    * detectors, or an empty list if no occurrences are found.
-   * 
+   *
    * @param payload An array of strings that you would like to scan
-   * @param config The configuration to use to scan the payload
+   * @param policy The configuration to use to scan the payload
+   * @param policyUUIDs An array of UUIDs referring to policies built through the Nightfall dashboard
    * @returns A promise that contains the API response
    */
-  async scanText(payload: string[], config: ScanText.RequestConfig): Promise<NightfallResponse<ScanText.Response>> {
+  async scanText(payload: string[], policy?: ScanText.RequestConfig, policyUUIDs?: string[]): Promise<NightfallResponse<ScanText.Response>> {
     try {
       const response = await axios.post<ScanText.Response>(
         `${this.API_HOST}/v3/scan`,
-        { payload, config },
+        { payload, policy, policyUUIDs },
         { headers: this.AXIOS_HEADERS },
       )
 
