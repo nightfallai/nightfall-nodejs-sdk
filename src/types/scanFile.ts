@@ -1,4 +1,4 @@
-import { Detector, NightfallError } from ".";
+import { Alerts, Detector, NightfallError } from ".";
 
 export namespace ScanFile {
   export interface ScanRequest {
@@ -10,6 +10,7 @@ export namespace ScanFile {
     detectionRuleUUIDs?: string[]
     detectionRules?: Detector.Rule[]
     webhookURL: string
+    alertConfig?: Alerts.AlertConfig
   }
 
   export interface InitializeResponse {
