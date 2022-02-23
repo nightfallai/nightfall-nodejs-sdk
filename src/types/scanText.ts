@@ -6,7 +6,7 @@ export namespace ScanText {
     detectionRules?: Detector.Rule[]
     contextBytes?: number
     defaultRedactionConfig?: Detector.RedactionConfig
-    alertConfig?: Alerts.AlertConfig
+    alertConfig?: Alerts.Config
   }
 
   export interface Response {

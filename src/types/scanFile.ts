@@ -9,8 +9,8 @@ export namespace ScanFile {
   export interface ScanPolicy {
     detectionRuleUUIDs?: string[]
     detectionRules?: Detector.Rule[]
-    webhookURL: string
-    alertConfig?: Alerts.AlertConfig
+    webhookURL?: string // Deprecated, use alertConfig instead
+    alertConfig?: Alerts.Config
   }
 
   export interface InitializeResponse {

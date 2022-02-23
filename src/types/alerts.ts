@@ -1,19 +1,19 @@
 export namespace Alerts {
-  export interface AlertConfig {
-    slack?: SlackAlert;
-    email?: EmailAlert;
-    url?: WebhookAlert;
+  export interface Config {
+    slack?: Slack;
+    email?: Email;
+    url?: Webhook;
   }
 
-  export interface SlackAlert {
+  export interface Slack {
     target: string;
   }
 
-  export interface EmailAlert {
+  export interface Email {
     address: string;
   }
 
-  export interface WebhookAlert {
+  export interface Webhook {
     address: string;
   }
 }
