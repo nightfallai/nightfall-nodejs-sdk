@@ -1,3 +1,4 @@
+export * from './alerts'
 export * from './detectors'
 export * from './global'
 export * from './scanFile'

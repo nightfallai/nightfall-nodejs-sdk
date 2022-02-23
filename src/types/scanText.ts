@@ -1,4 +1,4 @@
-import { Detector } from ".";
+import { Alerts, Detector } from ".";
 
 export namespace ScanText {
   export interface RequestConfig {
@@ -6,6 +6,7 @@ export namespace ScanText {
     detectionRules?: Detector.Rule[]
     contextBytes?: number
     defaultRedactionConfig?: Detector.RedactionConfig
+    alertConfig?: Alerts.Config
   }
 
   export interface Response {
