@@ -32,7 +32,7 @@ export class Base {
     this.AXIOS_HEADERS = {
       'Authorization': `Bearer ${this.API_KEY}`,
       'Content-Type': 'application/json',
-      "User-Agent": "nightfall-nodejs-sdk/1.0.0"
+      "User-Agent": "nightfall-nodejs-sdk/1.1.0"
     }
   }
 
