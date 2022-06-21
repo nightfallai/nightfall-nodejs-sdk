@@ -57,14 +57,15 @@ export class FileScanner extends Base {
       // Read the file in chunks
       const stream = fs.createReadStream(this.filePath, {
         highWaterMark: this.chunkSize,
-        encoding: 'utf8'
+        encoding: 'binary'
       })
 
       // Upload chunks
       let uploadOffset = 0
 
       for await (const chunk of stream) {
-        await axios.patch(`${this.API_HOST}/v3/upload/${this.fileId}`, chunk, {
+        let body = Buffer.from(chunk, 'binary')
+        await axios.patch(`${this.API_HOST}/v3/upload/${this.fileId}`, body, {
           headers: {
             ...this.AXIOS_HEADERS,
             'Content-Type': 'application/octet-stream',

@@ -7,6 +7,7 @@ import { Nightfall } from '../nightfall'
 // Mock data
 const API_HOST = 'https://api.nightfall.ai'
 const FILE_PATH = path.join(__dirname, "./", "mySecrets.txt");
+const IMAGE_FILE_PATH = path.join(__dirname, "./", "test-image.png");
 const REQUEST_POLICY: ScanFile.ScanPolicy = {
   detectionRuleUUIDs: ['MOCK_RULE_UUID'],
   webhookURL: 'https://webhook.com'
@@ -48,6 +49,16 @@ describe('should test the file scanning method', () => {
 
     const response = await nfClient.scanFile(FILE_PATH, REQUEST_POLICY)
     expect(scanFileSpy).toHaveBeenCalledWith(FILE_PATH, REQUEST_POLICY)
+    expect(response.data).toEqual(SCAN_RESPONSE)
+    expect(response.isError).toBe(false)
+  })
+
+  it('test binary upload data', async () => {
+    const nfClient = new Nightfall()
+    const scanFileSpy = jest.spyOn(nfClient, 'scanFile')
+
+    const response = await nfClient.scanFile(IMAGE_FILE_PATH, REQUEST_POLICY)
+    expect(scanFileSpy).toHaveBeenCalledWith(IMAGE_FILE_PATH, REQUEST_POLICY)
     expect(response.data).toEqual(SCAN_RESPONSE)
     expect(response.isError).toBe(false)
   })
