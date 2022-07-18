@@ -50,7 +50,8 @@ export const scanTextResponse = {
             "start": 25,
             "end": 41
           },
-          "commitHash": ""
+          "commitHash": "",
+          "commitAuthor": ""
         },
         "matchedDetectionRuleUUIDs": [],
         "matchedDetectionRules": [
