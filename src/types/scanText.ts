@@ -30,6 +30,7 @@ export namespace ScanText {
       rowRange?: FindingRange
       columnRange?: FindingRange
       commitHash: string
+      commitAuthor: string
     };
     redactedLocation?: {
       byteRange: FindingRange
@@ -37,6 +38,7 @@ export namespace ScanText {
       rowRange?: FindingRange
       columnRange?: FindingRange
       commitHash: string
+      commitAuthor: string
     }
     matchedDetectionRuleUUIDs: any[]
     matchedDetectionRules: string[]
