@@ -52,39 +52,56 @@ Nightfall provides pre-built detector types, covering data types ranging from PI
 
 #### Sample Code
 
+To run this sample script you must compile it as TypesScript. Save it as a `.tsc` file and run `tsc <yourfilename>.ts -lib ES2015,DOM `
+
+You can this run the resulting JavaScript file:
+
+`NIGHTFALL_API_KEY=<YourApiKey> node nodesdksample.js`
+
 ```typescript
 // By default, the client reads your API key from the environment variable NIGHTFALL_API_KEY
+import { Nightfall } from "nightfall-js";
+import { Detector } from "nightfall-js/dist/types"
+
 const nfClient = new Nightfall();
 
-const response = await nfClient.scanText(['My credit card number is 4242-4242-4242-4242'], {
-  detectionRules: [
-    {
-      name: 'Secrets Scanner',
-      logicalOp: 'ANY',
-      detectors: [
-        {
-          minNumFindings: 1,
-          minConfidence: Detector.Confidence.Possible,
-          displayName: 'Credit Card Number',
-          detectorType: Detector.Type.Nightfall,
-          nightfallDetector: 'CREDIT_CARD_NUMBER',
-        },
-      ],
-    },
-  ],
-});
-
-if (response.isError) {
-  console.log(response.getError());
-} else {
-  response.data.findings.forEach((finding) => {
-    if (finding.length > 0) {
-      finding.forEach((result) => {
-        console.log(`Finding: ${result.finding}, Confidence: ${result.confidence}`);
-      });
-    }
+var scanText = async function () {
+  return await nfClient.scanText(['The customer social security number is 111-22-3333'], {
+    detectionRules: [
+      {
+        name: 'Secrets Scanner',
+        logicalOp: 'ANY',
+        detectors: [
+          {
+            minNumFindings: 1,
+            minConfidence: Detector.Confidence.Possible, //'POSSIBLE', //
+            displayName: 'SSN Detector',
+            detectorType: Detector.Type.Nightfall, //'NIGHTFALL_DETECTOR', //
+            nightfallDetector: 'US_SOCIAL_SECURITY_NUMBER',
+          },
+        ],
+      },
+    ],
   });
+};
+
+async function main() {
+  const response = await scanText();
+
+  if (response.isError) {
+    console.log(response.getError());
+  } else if (response.data) {
+    response.data.findings.forEach((finding) => {
+      if (finding.length > 0) {
+        finding.forEach((result) => {
+          console.log(`Finding: ${result.finding}, Confidence: ${result.confidence}`);
+        });
+      }
+    });
+  }
 }
+
+main();
 ```
 
 ### Scanning Files
@@ -99,41 +116,59 @@ The file upload process is implemented as a series of requests to upload the fil
 provides a single method that wraps the steps required to upload your file. Please refer to the
 [API Reference](https://docs.nightfall.ai/reference) for more details.
 
+This script assumes a file named `./customer-details.txt` local to where the script is executed.
+
 The file is uploaded synchronously, but as files can be arbitrarily large, the scan itself is conducted asynchronously.
 The results from the scan are delivered by webhook; for more information about setting up a webhook server, refer to
 [the docs](https://docs.nightfall.ai/docs/creating-a-webhook-server).
 
+This script assumes a webhook a the location `https://my-service.com/nightfall/listener`.  Update this to your webhook server address.
+
 #### Sample Code
+
+To run this sample script you must compile it as TypesScript. Save it as a `.tsc` file and run `tsc <yourfilename>.ts -lib ES2015,DOM `
+
+You can this run the resulting JavaScript file:
+
+`NIGHTFALL_API_KEY=<YourApiKey> node nodesdksample.js`
 
 ```typescript
 // By default, the client reads your API key from the environment variable NIGHTFALL_API_KEY
+import { Nightfall } from "nightfall-js";
+import { Detector } from "nightfall-js/dist/types"
+
+// By default, the client reads your API key from the environment variable NIGHTFALL_API_KEY
 const nfClient = new Nightfall();
 
-const response = await nfClient.scanFile('./customer-details.txt', {
-  detectionRules: [
-    {
-      name: 'Secrets Scanner',
-      logicalOp: 'ANY',
-      detectors: [
-        {
-          minNumFindings: 1,
-          minConfidence: Detector.Confidence.Possible,
-          displayName: 'Credit Card Number',
-          detectorType: Detector.Type.Nightfall,
-          nightfallDetector: 'CREDIT_CARD_NUMBER',
-        },
-      ],
-    },
-  ],
-  webhookURL: 'https://my-service.com/nightfall/listener',
-});
+var scanFile = async function () {
+	const response = await nfClient.scanFile('./customer-details.txt', {
+	  detectionRules: [
+		{
+		  name: 'Secrets Scanner',
+		  logicalOp: 'ANY',
+		  detectors: [
+			{
+			  minNumFindings: 1,
+			  minConfidence: Detector.Confidence.Possible,
+			  displayName: 'Credit Card Number',
+			  detectorType: Detector.Type.Nightfall,
+			  nightfallDetector: 'CREDIT_CARD_NUMBER',
+			},
+		  ],
+		},
+	  ],
+	  webhookURL: 'https://my-service.com/nightfall/listener',
+	});
 
-if (response.isError) {
-  console.log(response.getError());
+	if (response.isError) {
+	  console.log(response.getError());
+	}
+
+	// Save this ID to check for findings when you receive a webhook event from us
+	console.log(response.data.id);
 }
 
-// Save this ID to check for findings when you receive a webhook event from us
-console.log(response.data.id);
+scanFile();
 ```
 
 ## Contributing
