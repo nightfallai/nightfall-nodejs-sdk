@@ -140,7 +140,7 @@ import { Detector } from "nightfall-js/dist/types"
 // By default, the client reads your API key from the environment variable NIGHTFALL_API_KEY
 const nfClient = new Nightfall();
 
-var scanFile = async function () {
+async function main() {
 	const response = await nfClient.scanFile('./customer-details.txt', {
 	  detectionRules: [
 		{
