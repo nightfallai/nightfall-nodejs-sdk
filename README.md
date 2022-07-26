@@ -168,7 +168,7 @@ async function main() {
 	console.log(response.data.id);
 }
 
-scanFile();
+main();
 ```
 
 ## Contributing
