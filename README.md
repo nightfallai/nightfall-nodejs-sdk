@@ -59,14 +59,8 @@ You can this run the resulting JavaScript file:
 `NIGHTFALL_API_KEY=<YourApiKey> node nodesdksample.js`
 
 ```typescript
-// By default, the client reads your API key from the environment variable NIGHTFALL_API_KEY
-import { Nightfall } from "nightfall-js";
-import { Detector } from "nightfall-js/dist/types"
-
-const nfClient = new Nightfall();
-
-var scanText = async function () {
-  return await nfClient.scanText(['The customer social security number is 111-22-3333'], {
+async function main() {
+  const response = await nfClient.scanText(['The customer social security number is 111-22-3333'], {
     detectionRules: [
       {
         name: 'Secrets Scanner',
@@ -74,19 +68,15 @@ var scanText = async function () {
         detectors: [
           {
             minNumFindings: 1,
-            minConfidence: Detector.Confidence.Possible, //'POSSIBLE', //
+            minConfidence: Detector.Confidence.Possible, //'POSSIBLE'
             displayName: 'SSN Detector',
-            detectorType: Detector.Type.Nightfall, //'NIGHTFALL_DETECTOR', //
+            detectorType: Detector.Type.Nightfall, //'NIGHTFALL_DETECTOR'
             nightfallDetector: 'US_SOCIAL_SECURITY_NUMBER',
           },
         ],
       },
     ],
   });
-};
-
-async function main() {
-  const response = await scanText();
 
   if (response.isError) {
     console.log(response.getError());
